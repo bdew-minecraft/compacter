@@ -1,0 +1,154 @@
+buildscript {
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'scala'
+apply plugin: 'forge'
+
+file "build.properties" withReader {
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
+
+if (project.hasProperty('forgeOverride')) {
+    config.forge.version = forgeOverride
+}
+
+if (project.hasProperty('buildnum')) {
+    ext.simpleVersion = "${config.compacter.version}.${project.buildnum}"
+} else {
+    ext.simpleVersion = "${config.compacter.version}-DEV"
+}
+
+version = simpleVersion + '-mc' + config.minecraft.version
+
+group = "net.bdew"
+archivesBaseName = "compacter"
+
+minecraft {
+    version = "${config.minecraft.version}-${config.forge.version}"
+    replace("BDLIB_VER", config.bdlib.version)
+    replace("COMPACTER_VER", simpleVersion.toString())
+    replace("COMPACTER_APIVER", simpleVersion.toString())
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name = "bdew"
+        url = "http://jenkins.bdew.net/maven"
+    }
+    ivy {
+        name "CoFHLib"
+        artifactPattern "http://addons-origin.cursecdn.com/files/${config.cofhlib.cf}/[module]-[revision](-[classifier])(.[ext])"
+    }
+}
+
+dependencies {
+    compile "net.bdew:bdlib:${config.bdlib.version}-mc${config.minecraft.version}:dev"
+    compile ":CoFHLib:${config.cofhlib.version}:dev@jar"
+}
+
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+sourceSets {
+    main {
+        scala {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+        output.resourcesDir = output.classesDir // Hack for IDEA
+    }
+}
+
+processResources {
+    inputs.property "tokens", minecraft.replacements
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        filter(ReplaceTokens, tokens: minecraft.replacements)
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+task sourceJar(type: Jar) {
+    classifier "sources"
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    exclude "**/*.psd"
+    classifier "dev"
+    duplicatesStrategy "exclude"
+}
+
+jar {
+    exclude "**/*.psd"
+}
+
+afterEvaluate { project ->
+    // Fudge the inputs of api/source jars so we get the version after replacements
+    tasks.getByPath(":sourceJar").from(tasks.getByPath(":sourceMainScala").outputs.files)
+}
+
+artifacts {
+    archives sourceJar
+    archives deobfJar
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact deobfJar
+            artifact sourceJar
+        }
+    }
+    repositories {
+        maven {
+            url "file://var/www/maven"
+        }
+    }
+}
+
+apply plugin: 'curseforge'
+
+curse {
+    projectId = config.curseforge.id
+    apiKey = project.hasProperty("curseForgeApiKey") ? project.curseForgeApiKey : ""
+    releaseType = 'alpha'
+
+    artifact = jar
+    changelog = project.hasProperty("changelog") ? project.changelog : "No changelog available"
+
+    additionalArtifact deobfJar
+    additionalArtifact sourceJar
+
+    relatedProject 'bdlib': 'requiredLibrary'
+    relatedProject 'cofhcore': 'optionalLibrary'
+}
