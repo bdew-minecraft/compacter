@@ -2,10 +2,10 @@ package net.bdew.compacter.blocks
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.gui.GuiProvider
-import net.bdew.lib.machine.Machine
+import net.bdew.lib.machine.{Machine, PoweredMachine}
 import net.minecraft.entity.player.EntityPlayer
 
-object MachineCompacter extends Machine("Compacter", BlockCompacter) with GuiProvider {
+object MachineCompacter extends Machine("Compacter", BlockCompacter) with GuiProvider with PoweredMachine {
   override def guiId: Int = 1
   override type TEClass = TileCompacter
 

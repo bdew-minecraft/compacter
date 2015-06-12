@@ -1,6 +1,7 @@
 package net.bdew.compacter.blocks
 
-import net.bdew.compacter.misc.WidgetMode
+import net.bdew.compacter.Textures
+import net.bdew.compacter.misc.{WidgetMode, WidgetPowerGaugeCustom}
 import net.bdew.compacter.network.{MsgSetCraftMode, MsgSetRecurseMode, MsgSetRsMode}
 import net.bdew.lib.Misc
 import net.bdew.lib.gui._
@@ -15,6 +16,8 @@ class GuiCompacter(val te: TileCompacter, player: EntityPlayer) extends BaseScre
 
     widgets.add(new WidgetLabel(BlockCompacter.getLocalizedName, 8, 6, Color.darkGray))
     widgets.add(new WidgetLabel(Misc.toLocal("container.inventory"), 8, this.ySize - 96 + 3, Color.darkGray))
+
+    widgets.add(new WidgetPowerGaugeCustom(Rect(9, 73, 13, 51), Textures.powerFill, te.power))
 
     widgets.add(WidgetMode(Point(116, 72), te.recurseMode, MsgSetRecurseMode, "compacter.recurse"))
     widgets.add(WidgetMode(Point(134, 72), te.craftMode, MsgSetCraftMode, "compacter.craftmode"))

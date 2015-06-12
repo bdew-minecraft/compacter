@@ -61,10 +61,15 @@ repositories {
         name "CoFHLib"
         artifactPattern "http://addons-origin.cursecdn.com/files/${config.cofhlib.cf}/[module]-[revision](-[classifier])(.[ext])"
     }
+    maven {
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
+    }
 }
 
 dependencies {
     compile "net.bdew:bdlib:${config.bdlib.version}-mc${config.minecraft.version}:dev"
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2.version}:api"
     compile ":CoFHLib:${config.cofhlib.version}:dev@jar"
 }
 

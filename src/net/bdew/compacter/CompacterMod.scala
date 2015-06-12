@@ -41,10 +41,9 @@ object CompacterMod {
   @EventHandler
   def preInit(event: FMLPreInitializationEvent) {
     log = event.getModLog
-
     configDir = new File(event.getModConfigurationDirectory, "compacter")
+    Config.load()
     TuningLoader.loadConfigFiles()
-
     Machines.load()
   }
 

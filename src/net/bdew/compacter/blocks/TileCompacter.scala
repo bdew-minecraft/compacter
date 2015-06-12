@@ -1,15 +1,17 @@
 package net.bdew.compacter.blocks
 
 import net.bdew.compacter.misc._
+import net.bdew.compacter.power.TilePowered
 import net.bdew.lib.data.base.TileDataSlots
 import net.bdew.lib.items.ItemUtils
 import net.bdew.lib.multiblock.data.RSMode
+import net.bdew.lib.power.DataSlotPower
 import net.bdew.lib.tile.inventory.{BreakableInventoryTile, PersistentInventoryTile, SidedInventory}
 import net.minecraft.item.ItemStack
 
 import scala.collection.mutable
 
-class TileCompacter extends TileDataSlots with PersistentInventoryTile with BreakableInventoryTile with SidedInventory {
+class TileCompacter extends TileDataSlots with PersistentInventoryTile with BreakableInventoryTile with SidedInventory with TilePowered {
   override def getSizeInventory = 43
 
   object Slots {
@@ -24,7 +26,9 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   val craftMode = DataSlotEnum("craftMode", this, CraftMode)
   val recurseMode = DataSlotEnum("recurseMode", this, RecurseMode)
   val outputQueue = DataSlotOutputQueue("outputQueue", this)
+  override val power = DataSlotPower("power", this)
 
+  power.configure(MachineCompacter)
   serverTick.listen(doTick)
 
   def doTick(): Unit = {
@@ -109,8 +113,10 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   def tryCraftAllStacks(stacks: mutable.Map[ItemDef, Int], mode: CompacterCache): Unit = {
     for ((item, amount) <- stacks.toList if amount >= mode.inputAmount) {
       var toOutput = amount / mode.inputAmount
+      if (power.stored < MachineCompacter.activationEnergy * toOutput) return
       val result = mode.getRecipe(item, worldObj)
       if (result != null) {
+        power.extract(MachineCompacter.activationEnergy * toOutput, false)
         stacks(item) -= toOutput * mode.inputAmount
         toOutput *= result.stackSize
         outputQueue.pushAll(splitToStacks(result, toOutput))
