@@ -2,23 +2,26 @@ package net.bdew.compacter.network
 
 import net.bdew.compacter.CompacterMod
 import net.bdew.compacter.blocks.{ContainerCompacter, CraftMode, RecurseMode}
+import net.bdew.lib.Misc
 import net.bdew.lib.multiblock.data.RSMode
 import net.bdew.lib.network.NetChannel
 
 object NetworkHandler extends NetChannel(CompacterMod.channel) {
   regServerHandler {
     case (MsgSetRsMode(rsMode), player) =>
-      if (player.openContainer.isInstanceOf[ContainerCompacter])
-        player.openContainer.asInstanceOf[ContainerCompacter].te.rsMode := rsMode
+      Misc.asInstanceOpt(player.openContainer, classOf[ContainerCompacter]) foreach { cont =>
+        cont.te.rsMode := rsMode
+        cont.te.haveWork = true
+      }
     case (MsgSetCraftMode(craftMode), player) =>
-      if (player.openContainer.isInstanceOf[ContainerCompacter]) {
-        val te = player.openContainer.asInstanceOf[ContainerCompacter].te
-        te.craftMode := craftMode
-        te.checkRecipes = true
+      Misc.asInstanceOpt(player.openContainer, classOf[ContainerCompacter]) foreach { cont =>
+        cont.te.craftMode := craftMode
+        cont.te.checkRecipes = true
       }
     case (MsgSetRecurseMode(recurseMode), player) =>
-      if (player.openContainer.isInstanceOf[ContainerCompacter])
-        player.openContainer.asInstanceOf[ContainerCompacter].te.recurseMode := recurseMode
+      Misc.asInstanceOpt(player.openContainer, classOf[ContainerCompacter]) foreach { cont =>
+        cont.te.recurseMode := recurseMode
+      }
   }
 }
 

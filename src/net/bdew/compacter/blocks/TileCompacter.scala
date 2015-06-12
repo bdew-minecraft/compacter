@@ -29,7 +29,6 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
 
   def doTick(): Unit = {
     if (checkRecipes) {
-      println("CHECK RECIPES")
       checkRecipes = false
       for (slot <- Slots.input; stack <- Option(getStackInSlot(slot)) if !canCraftItem(stack)) {
         outputQueue.push(stack)
@@ -37,11 +36,12 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
       }
     }
 
-    if (outputQueue.nonEmpty) processOutputQueue()
-    if (outputQueue.nonEmpty) haveWork = false
+    if (outputQueue.nonEmpty) {
+      processOutputQueue()
+      if (haveWork && outputQueue.nonEmpty) haveWork = false
+    }
+    if (haveWork && !canWorkRS) haveWork = false
     if (!haveWork) return
-
-    println("LOOP")
 
     val inputs = mutable.Map.empty[ItemDef, Int].withDefaultValue(0)
 
@@ -90,7 +90,6 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
     }
   }
 
-
   def splitToStacks(stack: ItemStack, amount: Int): List[ItemStack] = {
     var left = amount
     val res = mutable.Buffer.empty[ItemStack]
@@ -117,6 +116,13 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
         outputQueue.pushAll(splitToStacks(result, toOutput))
       }
     }
+  }
+
+  def canWorkRS = rsMode.value match {
+    case RSMode.ALWAYS => true
+    case RSMode.NEVER => false
+    case RSMode.RS_ON => worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)
+    case RSMode.RS_OFF => !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)
   }
 
   override def isItemValidForSlot(slot: Int, stack: ItemStack) =
