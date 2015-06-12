@@ -38,17 +38,17 @@ class CompacterCache(size: Int) {
     getRecipe(ItemDef(stack), world)
 
 
-  def getRecipe(idef: ItemDef, world: World): ItemStack = {
-    if (negative.contains(idef)) return null
-    if (cache.contains(idef)) return cache(idef).copy()
+  def getRecipe(itemDef: ItemDef, world: World): ItemStack = {
+    if (negative.contains(itemDef)) return null
+    if (cache.contains(itemDef)) return cache(itemDef).copy()
 
-    val fakeInventory = new FakeInventory(size, new ItemStack(idef.item, 1, idef.damage))
+    val fakeInventory = new FakeInventory(size, new ItemStack(itemDef.item, 1, itemDef.damage))
     val result = CraftingManager.getInstance.findMatchingRecipe(fakeInventory, world)
     if (result == null) {
-      negative += idef
+      negative += itemDef
       null
     } else {
-      cache += idef -> result.copy()
+      cache += itemDef -> result.copy()
       result.copy()
     }
   }
