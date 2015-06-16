@@ -45,6 +45,7 @@ object CompacterMod {
     Config.load()
     TuningLoader.loadConfigFiles()
     Machines.load()
+    Blocks.load()
   }
 
   @EventHandler

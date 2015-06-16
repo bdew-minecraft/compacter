@@ -1,6 +1,7 @@
 # ==== BLOCKS ====
 
 tile.compacter.Compacter.name=Compacter
+tile.compacter.Cobbler.name=Creative Cobble Generator
 
 compacter.recurse.enabled=Recursive compacting enabled
 compacter.recurse.disabled=Recursive compacting disabled
