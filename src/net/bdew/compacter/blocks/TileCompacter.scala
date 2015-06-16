@@ -90,6 +90,7 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
 
     if (outputQueue.nonEmpty) processOutputQueue()
     haveWork = false
+    processInputQueue()
   }
 
   def processOutputQueue(): Unit = {
@@ -158,10 +159,10 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   }
 
   override def isItemValidForSlot(slot: Int, stack: ItemStack) =
-    Slots.input.contains(slot) && canCraftItem(stack)
+    Slots.input.contains(slot) && inputQueue.isEmpty && canCraftItem(stack)
 
   override def canInsertItem(slot: Int, stack: ItemStack, side: Int) =
-    Slots.input.contains(slot) && canCraftItem(stack)
+    Slots.input.contains(slot) && inputQueue.isEmpty && canCraftItem(stack)
 
   override def canExtractItem(slot: Int, stack: ItemStack, side: Int) =
     Slots.output.contains(slot)
