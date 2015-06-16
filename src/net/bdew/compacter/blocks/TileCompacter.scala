@@ -2,7 +2,7 @@ package net.bdew.compacter.blocks
 
 import net.bdew.compacter.misc._
 import net.bdew.compacter.power.TilePowered
-import net.bdew.lib.data.base.TileDataSlots
+import net.bdew.lib.data.base.{DataSlot, TileDataSlots}
 import net.bdew.lib.items.ItemUtils
 import net.bdew.lib.multiblock.data.RSMode
 import net.bdew.lib.power.DataSlotPower
@@ -21,15 +21,26 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
 
   var haveWork = true
   var checkRecipes = true
+  var needPower = true
 
   val rsMode = DataSlotEnum("rsMode", this, RSMode)
   val craftMode = DataSlotEnum("craftMode", this, CraftMode)
   val recurseMode = DataSlotEnum("recurseMode", this, RecurseMode)
-  val outputQueue = DataSlotOutputQueue("outputQueue", this)
+  val outputQueue = DataSlotItemQueue("outputQueue", this)
+  val inputQueue = DataSlotItemQueue("inputQueue", this)
   override val power = DataSlotPower("power", this)
+
 
   power.configure(MachineCompacter)
   serverTick.listen(doTick)
+
+  override def dataSlotChanged(slot: DataSlot): Unit = {
+    if (needPower && slot == power) {
+      haveWork = true
+      needPower = false
+    }
+    super.dataSlotChanged(slot)
+  }
 
   def doTick(): Unit = {
     if (checkRecipes) {
@@ -39,6 +50,8 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
         setInventorySlotContents(slot, null)
       }
     }
+
+    processInputQueue()
 
     if (outputQueue.nonEmpty) {
       processOutputQueue()
@@ -82,13 +95,20 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   def processOutputQueue(): Unit = {
     while (outputQueue.nonEmpty) {
       var stack = outputQueue.pop()
-      if ((recurseMode :== RecurseMode.ENABLED) && canCraftItem(stack)) {
-        stack = ItemUtils.addStackToSlots(stack, this, Slots.input, false)
-      } else {
-        stack = ItemUtils.addStackToSlots(stack, this, Slots.output, false)
-      }
+      stack = ItemUtils.addStackToSlots(stack, this, Slots.output, false)
       if (stack != null) {
         outputQueue.push(stack)
+        return
+      }
+    }
+  }
+
+  def processInputQueue(): Unit = {
+    while (inputQueue.nonEmpty) {
+      var stack = inputQueue.pop()
+      stack = ItemUtils.addStackToSlots(stack, this, Slots.input, false)
+      if (stack != null) {
+        inputQueue.push(stack)
         return
       }
     }
@@ -113,13 +133,19 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   def tryCraftAllStacks(stacks: mutable.Map[ItemDef, Int], mode: CompacterCache): Unit = {
     for ((item, amount) <- stacks.toList if amount >= mode.inputAmount) {
       var toOutput = amount / mode.inputAmount
-      if (power.stored < MachineCompacter.activationEnergy * toOutput) return
+      if (power.stored < MachineCompacter.activationEnergy * toOutput) {
+        needPower = true
+        return
+      }
       val result = mode.getRecipe(item, worldObj)
       if (result != null) {
         power.extract(MachineCompacter.activationEnergy * toOutput, false)
         stacks(item) -= toOutput * mode.inputAmount
         toOutput *= result.stackSize
-        outputQueue.pushAll(splitToStacks(result, toOutput))
+        if (recurseMode.value == RecurseMode.ENABLED && canCraftItem(result))
+          inputQueue.pushAll(splitToStacks(result, toOutput))
+        else
+          outputQueue.pushAll(splitToStacks(result, toOutput))
       }
     }
   }

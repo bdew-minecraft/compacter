@@ -5,7 +5,7 @@ import net.bdew.lib.nbt
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotOutputQueue(name: String, parent: DataSlotContainer) extends DataSlot {
+case class DataSlotItemQueue(name: String, parent: DataSlotContainer) extends DataSlot {
   private val queue = collection.mutable.Queue.empty[ItemStack]
 
   setUpdate(UpdateKind.SAVE)
