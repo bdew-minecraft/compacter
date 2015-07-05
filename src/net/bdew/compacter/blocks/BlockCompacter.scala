@@ -4,11 +4,16 @@ import net.bdew.compacter.CompacterMod
 import net.bdew.lib.block.{HasTE, SimpleBlock}
 import net.bdew.lib.tile.inventory.BreakableInventoryBlock
 import net.minecraft.block.Block
-import net.minecraft.block.material.Material
+import net.minecraft.block.material.{MapColor, Material}
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.world.World
 
-object BlockCompacter extends SimpleBlock("Compacter", Material.iron) with HasTE[TileCompacter] with BreakableInventoryBlock {
+
+
+object BlockCompacter extends SimpleBlock("Compacter", new Material(MapColor.ironColor)) with HasTE[TileCompacter] with BreakableInventoryBlock {
+
+  setHardness(0.5F)
+
   override val TEClass = classOf[TileCompacter]
   override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, side: Int, xOffset: Float, yOffset: Float, zOffset: Float): Boolean = {
     if (!world.isRemote) {
