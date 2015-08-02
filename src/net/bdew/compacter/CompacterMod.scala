@@ -16,6 +16,7 @@ import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event._
 import cpw.mods.fml.common.network.NetworkRegistry
 import net.bdew.compacter.config._
+import net.bdew.compacter.itempush.ItemPush
 import net.bdew.compacter.network.NetworkHandler
 import net.bdew.lib.gui.GuiHandler
 import org.apache.logging.log4j.Logger
@@ -52,6 +53,7 @@ object CompacterMod {
   def init(event: FMLInitializationEvent) {
     NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler)
     NetworkHandler.init()
+    ItemPush.init()
   }
 
   @EventHandler
