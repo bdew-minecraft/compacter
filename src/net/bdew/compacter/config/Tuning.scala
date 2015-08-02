@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2013 - 2014
+ * Copyright (c) bdew, 2015
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
