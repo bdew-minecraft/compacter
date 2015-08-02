@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.compacter.blocks
+package net.bdew.compacter.blocks.compacter
 
 import net.bdew.lib.data.base.ContainerDataSlots
 import net.bdew.lib.gui.{BaseContainer, SlotValidating}

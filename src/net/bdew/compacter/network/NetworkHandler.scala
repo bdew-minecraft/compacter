@@ -10,7 +10,7 @@
 package net.bdew.compacter.network
 
 import net.bdew.compacter.CompacterMod
-import net.bdew.compacter.blocks.{ContainerCompacter, CraftMode, RecurseMode}
+import net.bdew.compacter.blocks.compacter.{ContainerCompacter, CraftMode, RecurseMode}
 import net.bdew.lib.Misc
 import net.bdew.lib.multiblock.data.RSMode
 import net.bdew.lib.network.NetChannel

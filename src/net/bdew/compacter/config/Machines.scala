@@ -10,7 +10,7 @@
 package net.bdew.compacter.config
 
 import net.bdew.compacter.CompacterMod
-import net.bdew.compacter.blocks.MachineCompacter
+import net.bdew.compacter.blocks.compacter.MachineCompacter
 import net.bdew.lib.config.MachineManager
 import net.minecraft.creativetab.CreativeTabs
 

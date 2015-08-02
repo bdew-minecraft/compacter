@@ -9,7 +9,7 @@
 
 package net.bdew.compacter
 
-import net.bdew.compacter.blocks.{CraftMode, RecurseMode}
+import net.bdew.compacter.blocks.compacter.{CraftMode, RecurseMode}
 import net.bdew.lib.gui._
 import net.bdew.lib.multiblock.data.RSMode
 import net.minecraft.util.ResourceLocation

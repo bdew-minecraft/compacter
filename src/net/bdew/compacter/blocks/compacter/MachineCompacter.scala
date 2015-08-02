@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.compacter.blocks
+package net.bdew.compacter.blocks.compacter
 
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.lib.gui.GuiProvider

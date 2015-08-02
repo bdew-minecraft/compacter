@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.compacter.blocks
+package net.bdew.compacter.blocks.compacter
 
 object RecurseMode extends Enumeration {
   val ENABLED = Value(0)

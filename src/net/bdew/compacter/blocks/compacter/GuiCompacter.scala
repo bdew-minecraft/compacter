@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.compacter.blocks
+package net.bdew.compacter.blocks.compacter
 
 import net.bdew.compacter.Textures
 import net.bdew.compacter.misc.{WidgetMode, WidgetPowerGaugeCustom}

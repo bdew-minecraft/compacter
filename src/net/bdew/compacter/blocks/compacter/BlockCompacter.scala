@@ -7,7 +7,7 @@
  * http://bdew.net/minecraft-mod-public-license/
  */
 
-package net.bdew.compacter.blocks
+package net.bdew.compacter.blocks.compacter
 
 import net.bdew.compacter.CompacterMod
 import net.bdew.lib.block.{HasTE, SimpleBlock}
