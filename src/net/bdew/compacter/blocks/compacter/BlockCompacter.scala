@@ -10,16 +10,16 @@
 package net.bdew.compacter.blocks.compacter
 
 import net.bdew.compacter.CompacterMod
+import net.bdew.compacter.blocks.MachineMaterial
 import net.bdew.lib.block.{HasTE, SimpleBlock}
 import net.bdew.lib.tile.inventory.BreakableInventoryBlock
 import net.minecraft.block.Block
-import net.minecraft.block.material.{MapColor, Material}
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.world.World
 
 
 
-object BlockCompacter extends SimpleBlock("Compacter", new Material(MapColor.ironColor)) with HasTE[TileCompacter] with BreakableInventoryBlock {
+object BlockCompacter extends SimpleBlock("Compacter", MachineMaterial) with HasTE[TileCompacter] with BreakableInventoryBlock {
 
   setHardness(0.5F)
 

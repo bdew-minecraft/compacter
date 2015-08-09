@@ -9,6 +9,8 @@
 
 package net.bdew.compacter.misc
 
+import java.util.Locale
+
 import net.bdew.compacter.Textures
 import net.bdew.compacter.network.NetworkHandler
 import net.bdew.lib.Misc
@@ -36,7 +38,7 @@ case class WidgetMode[T <: Enumeration](p: Point, ds: DataSlotEnum[T], pktConstr
   }
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) {
-    tip += Misc.toLocal(locPfx + "." + ds.value.toString.toLowerCase)
+    tip += Misc.toLocal(locPfx + "." + ds.value.toString.toLowerCase(Locale.US))
   }
 
   override def mouseClicked(p: Point, button: Int) {
