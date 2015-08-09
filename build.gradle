@@ -74,6 +74,7 @@ repositories {
 dependencies {
     compile "net.bdew:bdlib:${config.bdlib.version}-mc${config.minecraft.version}:dev"
     compile ":CoFHLib:${config.cofhlib.version}:dev@jar"
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2.version}:api"
     compile "com.mod-buildcraft:buildcraft:${config.buildcraft.version}:dev"
 }
 
