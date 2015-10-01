@@ -34,6 +34,8 @@ object Textures {
     CraftMode.TWO_THREE -> Texture(image, 179, 35, 14, 14),
     CraftMode.THREE_TWO -> Texture(image, 195, 35, 14, 14),
     CraftMode.THREE_ONLY -> Texture(image, 211, 35, 14, 14),
-    CraftMode.TWO_ONLY -> Texture(image, 227, 35, 14, 14)
+    CraftMode.TWO_ONLY -> Texture(image, 227, 35, 14, 14),
+    CraftMode.ONE_ONLY -> Texture(image, 179, 51, 14, 14),
+    CraftMode.HOLLOW -> Texture(image, 195, 51, 14, 14)
   )
 }

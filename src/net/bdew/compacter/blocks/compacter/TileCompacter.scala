@@ -87,6 +87,10 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
       case CraftMode.THREE_TWO =>
         tryCraftAllStacks(inputs, CompacterCache3x3)
         tryCraftAllStacks(inputs, CompacterCache2x2)
+      case CraftMode.ONE_ONLY =>
+        tryCraftAllStacks(inputs, CompacterCache1x1)
+      case CraftMode.HOLLOW =>
+        tryCraftAllStacks(inputs, CompacterCacheHollow)
     }
 
     val putBack = inputs filter (_._2 > 0) flatMap { case (item, amount) =>
@@ -181,6 +185,10 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
       CompacterCache3x3.hasRecipe(stack, worldObj)
     case CraftMode.TWO_ONLY =>
       CompacterCache2x2.hasRecipe(stack, worldObj)
+    case CraftMode.ONE_ONLY =>
+      CompacterCache1x1.hasRecipe(stack, worldObj)
+    case CraftMode.HOLLOW =>
+      CompacterCacheHollow.hasRecipe(stack, worldObj)
     case _ =>
       CompacterCache2x2.hasRecipe(stack, worldObj) || CompacterCache3x3.hasRecipe(stack, worldObj)
   }

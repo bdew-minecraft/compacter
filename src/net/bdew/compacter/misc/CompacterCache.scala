@@ -34,6 +34,11 @@ class FakeInventory(size: Int, stack: ItemStack) extends InventoryCrafting(FakeC
     if (slot < size * size) stack else null
 }
 
+class FakeInventoryHollow(stack: ItemStack) extends FakeInventory(3, stack) {
+  override def getStackInRowAndColumn(x: Int, y: Int): ItemStack =
+    if (x < 3 && y < 3 && !(x == 1 && y == 1)) stack else null
+}
+
 class CompacterCache(size: Int) {
   val negative = collection.mutable.Set.empty[ItemDef]
   val cache = collection.mutable.Map.empty[ItemDef, ItemStack]
@@ -46,12 +51,13 @@ class CompacterCache(size: Int) {
   def getRecipe(stack: ItemStack, world: World): ItemStack =
     getRecipe(ItemDef(stack), world)
 
+  def getInventory(stack: ItemStack) = new FakeInventory(size, stack)
 
   def getRecipe(itemDef: ItemDef, world: World): ItemStack = {
     if (negative.contains(itemDef)) return null
     if (cache.contains(itemDef)) return cache(itemDef).copy()
 
-    val fakeInventory = new FakeInventory(size, new ItemStack(itemDef.item, 1, itemDef.damage))
+    val fakeInventory = getInventory(new ItemStack(itemDef.item, 1, itemDef.damage))
     val result = CraftingManager.getInstance.findMatchingRecipe(fakeInventory, world)
     if (result == null) {
       negative += itemDef
@@ -63,6 +69,11 @@ class CompacterCache(size: Int) {
   }
 }
 
+object CompacterCache1x1 extends CompacterCache(1)
 object CompacterCache2x2 extends CompacterCache(2)
-
 object CompacterCache3x3 extends CompacterCache(3)
+
+object CompacterCacheHollow extends CompacterCache(3) {
+    override def getInventory(stack: ItemStack) = new FakeInventoryHollow(stack)
+    override val inputAmount = 8
+}
