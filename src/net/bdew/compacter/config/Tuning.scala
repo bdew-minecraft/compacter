@@ -12,15 +12,55 @@ package net.bdew.compacter.config
 import java.io.{File, FileWriter}
 
 import net.bdew.compacter.CompacterMod
+import net.bdew.compacter.misc.{CompacterCache2x2, CompacterCache3x3}
+import net.bdew.lib.recipes._
 import net.bdew.lib.recipes.gencfg.{ConfigSection, GenericConfigLoader, GenericConfigParser}
-import net.bdew.lib.recipes.{RecipeLoader, RecipeParser, RecipesHelper}
+import net.minecraftforge.oredict.OreDictionary
 
 object Tuning extends ConfigSection
 
 object TuningLoader {
   val loader = new RecipeLoader with GenericConfigLoader {
-    override def newParser(): RecipeParser = new RecipeParser with GenericConfigParser
+    override def newParser(): RecipeParser = new Parser
     override val cfgStore: ConfigSection = Tuning
+
+    override def processRecipeStatement(st: RecipeStatement) = st match {
+      case recipe: RsCompacter =>
+        val outStack = getConcreteStack(recipe.result)
+        if (outStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
+          CompacterMod.logDebug("Output meta is unset, defaulting to 0")
+          outStack.setItemDamage(0)
+        }
+        for (inStack <- getAllConcreteStacks(recipe.input)) {
+          if (inStack.getItemDamage == OreDictionary.WILDCARD_VALUE) {
+            CompacterMod.logDebug("Input meta is unset, defaulting to 0")
+            inStack.setItemDamage(0)
+          }
+          recipe match {
+            case x: RsCompacter4 =>
+              CompacterMod.logInfo("Adding custom recipe: 4*%s => %s", inStack, outStack)
+              CompacterCache2x2.addCustom(inStack, outStack)
+            case x: RsCompacter9 =>
+              CompacterMod.logInfo("Adding custom recipe: 9*%s => %s", inStack, outStack)
+              CompacterCache3x3.addCustom(inStack, outStack)
+          }
+        }
+      case _ => super.processRecipeStatement(st)
+    }
+  }
+
+  trait RsCompacter extends CraftingStatement {
+    def input: StackRef
+    def result: StackRef
+  }
+
+  case class RsCompacter4(input: StackRef, result: StackRef) extends RsCompacter
+  case class RsCompacter9(input: StackRef, result: StackRef) extends RsCompacter
+
+  class Parser extends RecipeParser with GenericConfigParser {
+    def compacterRecipe4 = "compacter" ~> ":" ~> "4" ~> "*" ~> spec ~ "=>" ~ spec ^^ { case in ~ arw ~ out => RsCompacter4(in, out) }
+    def compacterRecipe9 = "compacter" ~> ":" ~> "9" ~> "*" ~> spec ~ "=>" ~ spec ^^ { case in ~ arw ~ out => RsCompacter9(in, out) }
+    override def recipeStatement = super.recipeStatement | compacterRecipe4 | compacterRecipe9
   }
 
   def loadDelayed() = loader.processRecipeStatements()

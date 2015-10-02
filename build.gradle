@@ -69,6 +69,10 @@ repositories {
         name "BuildCraft"
         artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
     }
+    maven {
+        name = "chickenbones"
+        url = "http://chickenbones.net/maven"
+    }
 }
 
 dependencies {
@@ -76,6 +80,9 @@ dependencies {
     compile ":CoFHLib:${config.cofhlib.version}:dev@jar"
     compile "net.industrial-craft:industrialcraft-2:${config.ic2.version}:api"
     compile "com.mod-buildcraft:buildcraft:${config.buildcraft.version}:dev"
+    compile "codechicken:NotEnoughItems:${config.minecraft.version}-${config.nei.version}:dev"
+    compile "codechicken:CodeChickenLib:${config.minecraft.version}-${config.ccl.version}:dev"
+    compile "codechicken:CodeChickenCore:${config.minecraft.version}-${config.ccc.version}:dev"
 }
 
 

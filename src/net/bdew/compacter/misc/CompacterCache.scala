@@ -15,7 +15,9 @@ import net.minecraft.item.crafting.CraftingManager
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.world.World
 
-case class ItemDef(item: Item, damage: Int)
+case class ItemDef(item: Item, damage: Int) {
+  def stack(n: Int = 1) = new ItemStack(item, n, damage)
+}
 
 object ItemDef {
   def apply(stack: ItemStack): ItemDef = ItemDef(stack.getItem, stack.getItemDamage)
@@ -35,6 +37,7 @@ class FakeInventory(size: Int, stack: ItemStack) extends InventoryCrafting(FakeC
 }
 
 class CompacterCache(size: Int) {
+  val custom = collection.mutable.Map.empty[ItemDef, ItemStack]
   val negative = collection.mutable.Set.empty[ItemDef]
   val cache = collection.mutable.Map.empty[ItemDef, ItemStack]
 
@@ -46,9 +49,9 @@ class CompacterCache(size: Int) {
   def getRecipe(stack: ItemStack, world: World): ItemStack =
     getRecipe(ItemDef(stack), world)
 
-
   def getRecipe(itemDef: ItemDef, world: World): ItemStack = {
     if (negative.contains(itemDef)) return null
+    if (custom.contains(itemDef)) return custom(itemDef).copy()
     if (cache.contains(itemDef)) return cache(itemDef).copy()
 
     val fakeInventory = new FakeInventory(size, new ItemStack(itemDef.item, 1, itemDef.damage))
@@ -60,6 +63,10 @@ class CompacterCache(size: Int) {
       cache += itemDef -> result.copy()
       result.copy()
     }
+  }
+
+  def addCustom(in: ItemStack, out: ItemStack): Unit = {
+    custom += ItemDef(in) -> out
   }
 }
 
