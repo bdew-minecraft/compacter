@@ -19,4 +19,6 @@ object CraftMode extends Enumeration {
   val THREE_TWO = Value(1)
   val THREE_ONLY = Value(2)
   val TWO_ONLY = Value(3)
+  val ONE_ONLY = Value(4)
+  val HOLLOW = Value(5)
 }
