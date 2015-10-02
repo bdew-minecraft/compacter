@@ -15,17 +15,17 @@ import java.util
 import codechicken.nei.recipe.TemplateRecipeHandler
 import codechicken.nei.recipe.TemplateRecipeHandler.RecipeTransferRect
 import codechicken.nei.{NEIServerUtils, PositionedStack}
-import net.bdew.compacter.misc.{CompacterCache2x2, CompacterCache3x3, ItemDef}
+import net.bdew.compacter.misc._
 import net.minecraft.item.ItemStack
 
 import scala.collection.mutable
 
 class CompacterRecipeHandler extends TemplateRecipeHandler {
 
-  class CompacterRecipe(in: ItemStack, out: ItemStack, size: Int) extends CachedRecipe {
+  class CompacterRecipe(in: ItemStack, out: ItemStack, cache: CompacterCache) extends CachedRecipe {
     val result = new PositionedStack(out, 119, 24)
     val inputs =
-      for (x <- 0 until size; y <- 0 until size) yield
+      for (x <- 0 until cache.size; y <- 0 until cache.size if cache.recipeHasItemAt(x, y)) yield
       new PositionedStack(in, 25 + x * 18, 6 + y * 18)
 
     import scala.collection.JavaConversions._
@@ -34,17 +34,15 @@ class CompacterRecipeHandler extends TemplateRecipeHandler {
     override def getResult: PositionedStack = result
   }
 
+  val allCaches = List(CompacterCache1x1, CompacterCache2x2, CompacterCache3x3, CompacterCacheHollow)
+
   override def loadTransferRects(): Unit = {
     transferRects.add(new RecipeTransferRect(new Rectangle(84, 23, 24, 18), "Compacter"))
   }
 
   def addAllRecipes(): Unit = {
-    CompacterCache2x2.custom foreach { case (input, output) =>
-      arecipes.add(new CompacterRecipe(input.stack(), output, 2))
-    }
-    CompacterCache3x3.custom foreach { case (input, output) =>
-      arecipes.add(new CompacterRecipe(input.stack(), output, 3))
-    }
+    for (cache <- allCaches; (input, output) <- cache.custom)
+      arecipes.add(new CompacterRecipe(input.stack(), output, cache))
   }
 
   def findStack(hay: mutable.Map[ItemDef, ItemStack], needle: ItemStack) =
@@ -57,12 +55,8 @@ class CompacterRecipeHandler extends TemplateRecipeHandler {
   }
 
   override def loadCraftingRecipes(result: ItemStack): Unit = {
-    findStack(CompacterCache2x2.custom, result) foreach { case (input, output) =>
-      arecipes.add(new CompacterRecipe(input.stack(), output, 2))
-    }
-    findStack(CompacterCache3x3.custom, result) foreach { case (input, output) =>
-      arecipes.add(new CompacterRecipe(input.stack(), output, 3))
-    }
+    for (cache <- allCaches; (input, output) <- findStack(cache.custom, result))
+      arecipes.add(new CompacterRecipe(input.stack(), output, cache))
   }
 
   override def loadUsageRecipes(inputId: String, ingredients: AnyRef*): Unit = (inputId, ingredients) match {
@@ -73,10 +67,8 @@ class CompacterRecipeHandler extends TemplateRecipeHandler {
 
   override def loadUsageRecipes(ingredient: ItemStack): Unit = {
     val idef = ItemDef(ingredient)
-    if (CompacterCache2x2.custom.isDefinedAt(idef))
-      arecipes.add(new CompacterRecipe(ingredient, CompacterCache2x2.custom(idef), 2))
-    if (CompacterCache3x3.custom.isDefinedAt(idef))
-      arecipes.add(new CompacterRecipe(ingredient, CompacterCache2x2.custom(idef), 3))
+    for (cache <- allCaches; result <- cache.custom.get(idef))
+      arecipes.add(new CompacterRecipe(idef.stack(1), result, cache))
   }
 
   override def getGuiTexture = "textures/gui/container/crafting_table.png"
