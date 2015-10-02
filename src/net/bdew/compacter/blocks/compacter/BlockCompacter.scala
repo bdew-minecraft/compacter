@@ -17,8 +17,6 @@ import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.world.World
 
-
-
 object BlockCompacter extends SimpleBlock("Compacter", MachineMaterial) with HasTE[TileCompacter] with BreakableInventoryBlock {
 
   setHardness(0.5F)

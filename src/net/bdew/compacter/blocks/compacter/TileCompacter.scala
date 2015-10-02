@@ -39,7 +39,6 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   val inputQueue = DataSlotItemQueue("inputQueue", this)
   override val power = DataSlotPower("power", this)
 
-
   power.configure(MachineCompacter)
   serverTick.listen(doTick)
 

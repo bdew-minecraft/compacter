@@ -55,6 +55,7 @@ object TuningLoader {
   }
 
   case class RsCompacter4(input: StackRef, result: StackRef) extends RsCompacter
+
   case class RsCompacter9(input: StackRef, result: StackRef) extends RsCompacter
 
   class Parser extends RecipeParser with GenericConfigParser {
