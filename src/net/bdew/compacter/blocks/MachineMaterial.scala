@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -11,6 +11,4 @@ package net.bdew.compacter.blocks
 
 import net.minecraft.block.material.{MapColor, Material}
 
-object MachineMaterial extends Material(MapColor.ironColor) {
-
-}
+object MachineMaterial extends Material(MapColor.IRON)

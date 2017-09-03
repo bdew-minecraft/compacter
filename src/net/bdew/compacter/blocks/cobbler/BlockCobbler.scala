@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -9,9 +9,9 @@
 
 package net.bdew.compacter.blocks.cobbler
 
-import net.bdew.lib.block.{HasTE, SimpleBlock}
-import net.minecraft.block.material.Material
+import net.bdew.compacter.blocks.MachineMaterial
+import net.bdew.lib.block.{BaseBlock, HasTE}
 
-object BlockCobbler extends SimpleBlock("Cobbler", Material.iron) with HasTE[TileCobbler] {
+object BlockCobbler extends BaseBlock("cobbler", MachineMaterial) with HasTE[TileCobbler] {
   override val TEClass = classOf[TileCobbler]
 }

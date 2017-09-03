@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -14,6 +14,6 @@ import net.bdew.compacter.blocks.compacter.MachineCompacter
 import net.bdew.lib.config.MachineManager
 import net.minecraft.creativetab.CreativeTabs
 
-object Machines extends MachineManager(Tuning.getSection("Machines"), CompacterMod.guiHandler, CreativeTabs.tabMisc) {
+object Machines extends MachineManager(Tuning.getSection("Machines"), CompacterMod.guiHandler, Blocks) {
   registerMachine(MachineCompacter)
 }

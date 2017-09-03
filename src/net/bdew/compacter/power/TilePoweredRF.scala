@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -9,20 +9,20 @@
 
 package net.bdew.compacter.power
 
-import cofh.api.energy.IEnergyHandler
-import cpw.mods.fml.common.Optional
+import cofh.redstoneflux.api.IEnergyReceiver
+import net.bdew.compacter.config.Tuning
 import net.bdew.lib.power.TilePoweredBase
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraft.util.EnumFacing
+import net.minecraftforge.fml.common.Optional
 
-@Optional.Interface(modid = PowerProxy.TE_MOD_ID, iface = "cofh.api.energy.IEnergyHandler")
-trait TilePoweredRF extends TilePoweredBase with IEnergyHandler {
-  override def receiveEnergy(from: ForgeDirection, maxReceive: Int, simulate: Boolean) =
+@Optional.Interface(modid = PowerProxy.TE_MOD_ID, iface = "cofh.redstoneflux.api.IEnergyReceiver")
+trait TilePoweredRF extends TilePoweredBase with IEnergyReceiver {
+  override def receiveEnergy(from: EnumFacing, maxReceive: Int, simulate: Boolean) =
     if (PowerProxy.RFEnabled)
       power.inject(maxReceive, simulate).floor.toInt
     else 0
 
-  override def extractEnergy(from: ForgeDirection, maxExtract: Int, simulate: Boolean) = 0
-  override def canConnectEnergy(from: ForgeDirection) = PowerProxy.RFEnabled
-  override def getEnergyStored(from: ForgeDirection) = power.stored.floor.toInt
-  override def getMaxEnergyStored(from: ForgeDirection) = power.capacity.floor.toInt
+  override def canConnectEnergy(from: EnumFacing) = PowerProxy.RFEnabled
+  override def getEnergyStored(from: EnumFacing) = power.stored.floor.toInt
+  override def getMaxEnergyStored(from: EnumFacing) = power.capacity.floor.toInt
 }

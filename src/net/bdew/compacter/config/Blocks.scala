@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -13,6 +13,6 @@ import net.bdew.compacter.blocks.cobbler.BlockCobbler
 import net.bdew.lib.config.BlockManager
 import net.minecraft.creativetab.CreativeTabs
 
-object Blocks extends BlockManager(CreativeTabs.tabMisc) {
+object Blocks extends BlockManager(CreativeTabs.MISC) {
   regBlock(BlockCobbler)
 }

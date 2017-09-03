@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -11,14 +11,13 @@ package net.bdew.compacter
 
 import java.io.File
 
-import cpw.mods.fml.common.Mod
-import cpw.mods.fml.common.Mod.EventHandler
-import cpw.mods.fml.common.event._
-import cpw.mods.fml.common.network.NetworkRegistry
 import net.bdew.compacter.config._
-import net.bdew.compacter.itempush.ItemPush
 import net.bdew.compacter.network.NetworkHandler
 import net.bdew.lib.gui.GuiHandler
+import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.Mod.EventHandler
+import net.minecraftforge.fml.common.event.{FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
+import net.minecraftforge.fml.common.network.NetworkRegistry
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = CompacterMod.modId, version = "COMPACTER_VER", name = "Compacter", dependencies = "required-after:bdlib", modLanguage = "scala")
@@ -53,7 +52,6 @@ object CompacterMod {
   def init(event: FMLInitializationEvent) {
     NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler)
     NetworkHandler.init()
-    ItemPush.init()
   }
 
   @EventHandler

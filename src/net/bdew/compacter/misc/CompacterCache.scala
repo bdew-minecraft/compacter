@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -31,7 +31,7 @@ class FakeInventory(cache: CompacterCache, stack: ItemStack) extends InventoryCr
   override def getSizeInventory = cache.size * cache.size
   override def markDirty(): Unit = {}
   override def getStackInRowAndColumn(x: Int, y: Int): ItemStack =
-    if (cache.recipeHasItemAt(x, y)) stack else null
+    if (cache.recipeHasItemAt(x, y)) stack else ItemStack.EMPTY
   override def getStackInSlot(slot: Int): ItemStack = {
     val x = slot % cache.size
     val y = slot / cache.size
@@ -47,7 +47,7 @@ class CompacterCache(val size: Int) {
   val inputAmount = size * size
 
   def hasRecipe(stack: ItemStack, world: World) =
-    (!stack.hasTagCompound) && (getRecipe(stack, world) != null)
+    (!stack.hasTagCompound) && !getRecipe(stack, world).isEmpty
 
   def getRecipe(stack: ItemStack, world: World): ItemStack =
     getRecipe(ItemDef(stack), world)
@@ -55,15 +55,15 @@ class CompacterCache(val size: Int) {
   def recipeHasItemAt(x: Int, y: Int) = x < size && y < size
 
   def getRecipe(itemDef: ItemDef, world: World): ItemStack = {
-    if (negative.contains(itemDef)) return null
+    if (negative.contains(itemDef)) return ItemStack.EMPTY
     if (custom.contains(itemDef)) return custom(itemDef).copy()
     if (cache.contains(itemDef)) return cache(itemDef).copy()
 
     val fakeInventory = new FakeInventory(this, new ItemStack(itemDef.item, 1, itemDef.damage))
-    val result = CraftingManager.getInstance.findMatchingRecipe(fakeInventory, world)
-    if (result == null) {
+    val result = CraftingManager.findMatchingResult(fakeInventory, world)
+    if (result.isEmpty) {
       negative += itemDef
-      null
+      ItemStack.EMPTY
     } else {
       cache += itemDef -> result.copy()
       result.copy()

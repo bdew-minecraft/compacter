@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -9,22 +9,21 @@
 
 package net.bdew.compacter.blocks.cobbler
 
-import net.bdew.lib.block.BlockRef
-import net.bdew.lib.tile.TileExtended
+import net.bdew.lib.capabilities.helpers.ItemHelper
+import net.bdew.lib.tile.TileTicking
 import net.minecraft.init.Blocks
-import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
+import net.minecraft.util.EnumFacing
 
-class TileCobbler extends TileExtended {
-  lazy val cobbleStack = new ItemStack(Blocks.cobblestone, 64)
+class TileCobbler extends TileTicking {
+  lazy val cobbleStack = new ItemStack(Blocks.COBBLESTONE, 64)
   serverTick.listen(() => {
     for {
-      (side, pos) <- BlockRef.fromTile(this).neighbours
-      inv <- pos.getTile[IInventory](worldObj)
-      slot <- 0 until inv.getSizeInventory
+      side <- EnumFacing.VALUES
+      handler <- ItemHelper.getItemHandler(world, pos.offset(side), side.getOpposite)
+      slot <- 0 until handler.getSlots
     } {
-      if (inv.getStackInSlot(slot) == null && inv.isItemValidForSlot(slot, cobbleStack))
-        inv.setInventorySlotContents(slot, cobbleStack.copy())
+      if (handler.getStackInSlot(slot).isEmpty) handler.insertItem(slot, cobbleStack.copy(), false)
     }
   })
 }

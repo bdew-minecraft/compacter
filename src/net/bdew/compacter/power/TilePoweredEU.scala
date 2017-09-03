@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -9,18 +9,18 @@
 
 package net.bdew.compacter.power
 
-import cpw.mods.fml.common.Optional
 import ic2.api.energy.event.{EnergyTileLoadEvent, EnergyTileUnloadEvent}
-import ic2.api.energy.tile.IEnergySink
+import ic2.api.energy.tile.{IEnergyEmitter, IEnergySink}
 import net.bdew.compacter.config.Tuning
 import net.bdew.lib.Misc
 import net.bdew.lib.power.TilePoweredBase
-import net.minecraft.tileentity.TileEntity
+import net.bdew.lib.tile.TileTicking
+import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.common.util.ForgeDirection
+import net.minecraftforge.fml.common.Optional
 
 @Optional.Interface(modid = PowerProxy.IC2_MOD_ID, iface = "ic2.api.energy.tile.IEnergySink")
-trait TilePoweredEU extends TilePoweredBase with IEnergySink {
+trait TilePoweredEU extends TilePoweredBase with IEnergySink with TileTicking {
   var sentLoaded = false
   private lazy val ratio = Tuning.getSection("Power").getFloat("EU_RF_Ratio")
   lazy val sinkTier = Tuning.getSection("Power").getSection("EU").getInt("SinkTier")
@@ -58,12 +58,13 @@ trait TilePoweredEU extends TilePoweredBase with IEnergySink {
 
   override def getDemandedEnergy = Misc.clamp(power.capacity - power.stored, 0F, power.maxReceive) * ratio
   override def getSinkTier = sinkTier
-  override def injectEnergy(directionFrom: ForgeDirection, amount: Double, p3: Double) = {
+  override def injectEnergy(directionFrom: EnumFacing, amount: Double, p3: Double) = {
     // IC2 is borked and is ignoring the return value, we need to store everything otherwise energy will be wasted
     // We go around power.inject so that all energy can be added
     power.stored += (amount / ratio).toFloat
     power.parent.dataSlotChanged(power)
     0
   }
-  override def acceptsEnergyFrom(emitter: TileEntity, direction: ForgeDirection) = PowerProxy.EUEnabled
+
+  override def acceptsEnergyFrom(iEnergyEmitter: IEnergyEmitter, enumFacing: EnumFacing): Boolean = PowerProxy.EUEnabled
 }

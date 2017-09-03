@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -9,8 +9,8 @@
 
 package net.bdew.compacter.misc
 
+import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.bdew.lib.nbt
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
@@ -19,8 +19,6 @@ case class DataSlotItemQueue(name: String, parent: DataSlotContainer) extends Da
 
   setUpdate(UpdateKind.SAVE)
 
-  import nbt._
-
   def push(v: ItemStack) = queue += v
   def pushAll(v: List[ItemStack]) = queue ++= v
   def pop(): ItemStack = queue.dequeue()
@@ -28,11 +26,11 @@ case class DataSlotItemQueue(name: String, parent: DataSlotContainer) extends Da
   def nonEmpty = queue.nonEmpty
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value): Unit = {
-    t.setList(name, queue map (x => NBT.from(x.writeToNBT)))
+    t.setList(name, queue)
   }
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value): Unit = {
     queue.clear()
-    queue ++= t.getList[NBTTagCompound](name) map ItemStack.loadItemStackFromNBT
+    queue ++= t.getList[ItemStack](name)
   }
 }

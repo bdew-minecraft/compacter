@@ -9,6 +9,11 @@
 
 package net.bdew.compacter.power
 
+import net.bdew.lib.capabilities.CapabilityProvider
 import net.bdew.lib.power.TilePoweredBase
 
-trait TilePowered extends TilePoweredBase with TilePoweredRF with TilePoweredEU with TilePoweredTesla with TilePoweredForge
+trait TilePoweredTesla extends TilePoweredBase with CapabilityProvider {
+  if (PowerProxy.haveTesla && PowerProxy.TeslaEnabled) {
+    Tesla.injectTesla(this)
+  }
+}

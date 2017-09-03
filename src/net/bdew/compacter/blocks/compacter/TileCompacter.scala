@@ -1,5 +1,5 @@
 /*
- * Copyright (c) bdew, 2015
+ * Copyright (c) bdew, 2015 - 2017
  * https://github.com/bdew/compacter
  *
  * This mod is distributed under the terms of the Minecraft Mod Public
@@ -11,16 +11,17 @@ package net.bdew.compacter.blocks.compacter
 
 import net.bdew.compacter.misc._
 import net.bdew.compacter.power.TilePowered
-import net.bdew.lib.data.base.{DataSlot, TileDataSlots}
+import net.bdew.lib.data.base.{DataSlot, TileDataSlotsTicking}
 import net.bdew.lib.items.ItemUtils
 import net.bdew.lib.multiblock.data.RSMode
 import net.bdew.lib.power.DataSlotPower
 import net.bdew.lib.tile.inventory.{BreakableInventoryTile, PersistentInventoryTile, SidedInventory}
 import net.minecraft.item.ItemStack
+import net.minecraft.util.EnumFacing
 
 import scala.collection.mutable
 
-class TileCompacter extends TileDataSlots with PersistentInventoryTile with BreakableInventoryTile with SidedInventory with TilePowered {
+class TileCompacter extends TileDataSlotsTicking with PersistentInventoryTile with BreakableInventoryTile with SidedInventory with TilePowered {
   override def getSizeInventory = 43
 
   object Slots {
@@ -50,12 +51,19 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
     super.dataSlotChanged(slot)
   }
 
+  def getNonEmptyStack(slot: Int): Option[ItemStack] = {
+    getStackInSlot(slot) match {
+      case x if x.isEmpty => None
+      case x => Some(x)
+    }
+  }
+
   def doTick(): Unit = {
     if (checkRecipes) {
       checkRecipes = false
-      for (slot <- Slots.input; stack <- Option(getStackInSlot(slot)) if !canCraftItem(stack)) {
+      for (slot <- Slots.input; stack <- getNonEmptyStack(slot) if !canCraftItem(stack)) {
         outputQueue.push(stack)
-        setInventorySlotContents(slot, null)
+        setInventorySlotContents(slot, ItemStack.EMPTY)
       }
     }
 
@@ -70,9 +78,9 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
 
     val inputs = mutable.Map.empty[ItemDef, Int].withDefaultValue(0)
 
-    for (slot <- Slots.input; stack <- Option(getStackInSlot(slot))) {
-      inputs(ItemDef(stack)) += stack.stackSize
-      setInventorySlotContents(slot, null)
+    for (slot <- Slots.input; stack <- getNonEmptyStack(slot)) {
+      inputs(ItemDef(stack)) += stack.getCount
+      setInventorySlotContents(slot, ItemStack.EMPTY)
     }
 
     craftMode.value match {
@@ -109,7 +117,7 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
     while (outputQueue.nonEmpty) {
       var stack = outputQueue.pop()
       stack = ItemUtils.addStackToSlots(stack, this, Slots.output, false)
-      if (stack != null) {
+      if (!stack.isEmpty) {
         outputQueue.push(stack)
         return
       }
@@ -120,7 +128,7 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
     while (inputQueue.nonEmpty) {
       var stack = inputQueue.pop()
       stack = ItemUtils.addStackToSlots(stack, this, Slots.input, false)
-      if (stack != null) {
+      if (stack.isEmpty) {
         inputQueue.push(stack)
         return
       }
@@ -131,13 +139,13 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
     var left = amount
     val res = mutable.Buffer.empty[ItemStack]
     val maxStack = stack.getMaxStackSize
-    stack.stackSize = maxStack
+    stack.setCount(maxStack)
     while (left >= maxStack) {
       res += stack.copy()
       left -= maxStack
     }
     if (left > 0) {
-      stack.stackSize = left
+      stack.setCount(left)
       res += stack
     }
     res.toList
@@ -150,11 +158,11 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
         needPower = true
         return
       }
-      val result = mode.getRecipe(item, worldObj)
-      if (result != null) {
+      val result = mode.getRecipe(item, world)
+      if (!result.isEmpty) {
         power.extract(MachineCompacter.activationEnergy * toOutput, false)
         stacks(item) -= toOutput * mode.inputAmount
-        toOutput *= result.stackSize
+        toOutput *= result.getCount
         if (recurseMode.value == RecurseMode.ENABLED && canCraftItem(result))
           inputQueue.pushAll(splitToStacks(result, toOutput))
         else
@@ -166,30 +174,30 @@ class TileCompacter extends TileDataSlots with PersistentInventoryTile with Brea
   def canWorkRS = rsMode.value match {
     case RSMode.ALWAYS => true
     case RSMode.NEVER => false
-    case RSMode.RS_ON => worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)
-    case RSMode.RS_OFF => !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)
+    case RSMode.RS_ON => world.isBlockIndirectlyGettingPowered(pos) > 0
+    case RSMode.RS_OFF => world.isBlockIndirectlyGettingPowered(pos) == 0
   }
 
   override def isItemValidForSlot(slot: Int, stack: ItemStack) =
     Slots.input.contains(slot) && inputQueue.isEmpty && canCraftItem(stack)
 
-  override def canInsertItem(slot: Int, stack: ItemStack, side: Int) =
+  override def canInsertItem(slot: Int, stack: ItemStack, side: EnumFacing) =
     Slots.input.contains(slot) && inputQueue.isEmpty && canCraftItem(stack)
 
-  override def canExtractItem(slot: Int, stack: ItemStack, side: Int) =
+  override def canExtractItem(slot: Int, stack: ItemStack, side: EnumFacing) =
     Slots.output.contains(slot)
 
   def canCraftItem(stack: ItemStack): Boolean = craftMode.value match {
     case CraftMode.THREE_ONLY =>
-      CompacterCache3x3.hasRecipe(stack, worldObj)
+      CompacterCache3x3.hasRecipe(stack, world)
     case CraftMode.TWO_ONLY =>
-      CompacterCache2x2.hasRecipe(stack, worldObj)
+      CompacterCache2x2.hasRecipe(stack, world)
     case CraftMode.ONE_ONLY =>
-      CompacterCache1x1.hasRecipe(stack, worldObj)
+      CompacterCache1x1.hasRecipe(stack, world)
     case CraftMode.HOLLOW =>
-      CompacterCacheHollow.hasRecipe(stack, worldObj)
+      CompacterCacheHollow.hasRecipe(stack, world)
     case _ =>
-      CompacterCache2x2.hasRecipe(stack, worldObj) || CompacterCache3x3.hasRecipe(stack, worldObj)
+      CompacterCache2x2.hasRecipe(stack, world) || CompacterCache3x3.hasRecipe(stack, world)
   }
 
   override def markDirty(): Unit = {
