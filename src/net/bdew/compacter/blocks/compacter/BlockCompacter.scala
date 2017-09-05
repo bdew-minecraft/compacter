@@ -16,9 +16,9 @@ import net.bdew.lib.tile.inventory.BreakableInventoryBlock
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.{EnumFacing, EnumHand}
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.{IBlockAccess, World}
+import net.minecraft.util.{EnumFacing, EnumHand}
+import net.minecraft.world.World
 
 object BlockCompacter extends BaseBlock("compacter", MachineMaterial) with HasTE[TileCompacter] with BreakableInventoryBlock {
 
@@ -35,7 +35,7 @@ object BlockCompacter extends BaseBlock("compacter", MachineMaterial) with HasTE
   }
 
   override def neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block, fromPos: BlockPos): Unit = {
-    val te = getTE(world,pos)
+    val te = getTE(world, pos)
     if (!te.haveWork && !world.isRemote && te.canWorkRS) {
       te.haveWork = true
     }

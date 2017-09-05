@@ -10,7 +10,6 @@
 package net.bdew.compacter.power
 
 import cofh.redstoneflux.api.IEnergyReceiver
-import net.bdew.compacter.config.Tuning
 import net.bdew.lib.power.TilePoweredBase
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.fml.common.Optional
