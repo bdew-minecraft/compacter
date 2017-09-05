@@ -23,7 +23,7 @@ object Config {
     c.load()
 
     try {
-      powerShowUnits = c.get("Display", "PowerShowUnits", "RF", "Units to use when displaying power. Valid values: EU, RF").getString
+      powerShowUnits = c.get("Display", "PowerShowUnits", "RF", "Units to use when displaying power. Valid values: EU, RF, FE, T", Array("RF", "EU", "FE", "T")).getString
       if (powerShowUnits != "RF") powerShowMultiplier = Tuning.getSection("Power").getFloat(powerShowUnits + "_RF_Ratio")
     } finally {
       c.save()

@@ -17,7 +17,7 @@ import net.bdew.lib.Misc
 import net.minecraft.util.ResourceLocation
 
 class CompacterRecipeCategory(guiHelper: IGuiHelper) extends IRecipeCategory[CompacterRecipe] {
-  val background = guiHelper.createDrawable(new ResourceLocation("compacter", "textures/gui/compacter.png"), 0, 0, 176, 222)
+  val background = guiHelper.createDrawable(new ResourceLocation("compacter", "textures/gui/compacter.png"), 6, 16, 165, 112)
 
   override def getUid = "bdew.compacter"
   override def getModName = "Compacter"
@@ -26,8 +26,8 @@ class CompacterRecipeCategory(guiHelper: IGuiHelper) extends IRecipeCategory[Com
 
   override def setRecipe(recipeLayout: IRecipeLayout, recipeWrapper: CompacterRecipe, ingredients: IIngredients) = {
     val stacks = recipeLayout.getItemStacks
-    stacks.init(0, true, 8, 18)
-    stacks.init(1, false, 26, 90)
+    stacks.init(0, true, 1, 1)
+    stacks.init(1, false, 19, 73)
     stacks.set(0, recipeWrapper.in)
     stacks.set(1, recipeWrapper.out)
   }

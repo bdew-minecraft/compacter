@@ -10,9 +10,12 @@
 package net.bdew.compacter.jei
 
 import mezz.jei.api.recipe.IRecipeCategoryRegistration
-import mezz.jei.api.{IModPlugin, IModRegistry}
+import mezz.jei.api.{IModPlugin, IModRegistry, JEIPlugin}
+import net.bdew.compacter.blocks.compacter.BlockCompacter
 import net.bdew.compacter.misc._
+import net.minecraft.item.ItemStack
 
+@JEIPlugin
 class CompacterJEIPlugin extends IModPlugin {
   override def registerCategories(registry: IRecipeCategoryRegistration) = {
     registry.addRecipeCategories(new CompacterRecipeCategory(registry.getJeiHelpers.getGuiHelper))
@@ -32,6 +35,7 @@ class CompacterJEIPlugin extends IModPlugin {
       convertRecipes(CompacterCache3x3) ++
       convertRecipes(CompacterCacheHollow)
 
+    registry.addRecipeCatalyst(new ItemStack(BlockCompacter), "bdew.compacter")
     registry.addRecipes(recipes, "bdew.compacter")
   }
 }
