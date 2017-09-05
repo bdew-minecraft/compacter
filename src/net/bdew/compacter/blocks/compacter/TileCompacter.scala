@@ -128,7 +128,7 @@ class TileCompacter extends TileDataSlotsTicking with PersistentInventoryTile wi
     while (inputQueue.nonEmpty) {
       var stack = inputQueue.pop()
       stack = ItemUtils.addStackToSlots(stack, this, Slots.input, false)
-      if (stack.isEmpty) {
+      if (!stack.isEmpty) {
         inputQueue.push(stack)
         return
       }
