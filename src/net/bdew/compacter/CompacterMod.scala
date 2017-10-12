@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.event.{FMLInitializationEvent, FMLPostIniti
 import net.minecraftforge.fml.common.network.NetworkRegistry
 import org.apache.logging.log4j.Logger
 
-@Mod(modid = CompacterMod.modId, version = "COMPACTER_VER", name = "Compacter", dependencies = "required-after:bdlib", modLanguage = "scala")
+@Mod(modid = CompacterMod.modId, version = "COMPACTER_VER", name = "Compacter", dependencies = "required-after:bdlib", modLanguage = "scala", acceptedMinecraftVersions = "[1.12,1.12.2]")
 object CompacterMod {
   var log: Logger = null
   var instance = this
