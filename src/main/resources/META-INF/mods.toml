@@ -1,0 +1,40 @@
+modLoader = "kotori_scala"
+loaderVersion = "[2.13.3,2.14.0)"
+issueTrackerURL = "https://github.com/bdew-minecraft/compacter/issues"
+license = "All Rights Reserved" #fixme
+
+[[mods]]
+modId = "compacter"
+version = "${file.jarVersion}"
+displayName = "Compacter"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/compacter"
+authors = "bdew"
+description = '''
+This mods adds a single simple block - the Compacter.
+- It will try crafting input items in either 2x2 or 3x3 pattern (configurable in the GUI) and output the result.
+- It will process unlimited items per tick, as long as there enough items and energy provided.
+- You can set it to work only when redstone signal is applied (configurable in the GUI).
+- Recursive compacting mode can be enabled from the GUI which will try combining outputed items again (for e.g. compressed cobble).
+'''
+
+[[dependencies.compacter]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.compacter]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.compacter]]
+modId = "bdlib"
+mandatory = true
+versionRange = "[1.15.0,)"
+ordering = "NONE"
+side = "BOTH"
+

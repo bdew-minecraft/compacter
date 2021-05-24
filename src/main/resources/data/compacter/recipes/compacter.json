@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PRP",
+    "RXR",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "X": {
+      "item": "minecraft:crafting_table"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "compacter:compacter",
+    "count": 1
+  }
+}
