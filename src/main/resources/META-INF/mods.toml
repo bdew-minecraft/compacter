@@ -34,7 +34,7 @@ side = "BOTH"
 [[dependencies.compacter]]
 modId = "bdlib"
 mandatory = true
-versionRange = "[1.15.0,)"
+versionRange = "[1.16.0,)"
 ordering = "NONE"
 side = "BOTH"
 
