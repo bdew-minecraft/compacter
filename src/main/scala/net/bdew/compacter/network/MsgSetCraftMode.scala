@@ -1,14 +1,14 @@
 package net.bdew.compacter.network
 
 import net.bdew.compacter.blocks.compacter.CraftMode
-import net.minecraft.network.PacketBuffer
+import net.minecraft.network.FriendlyByteBuf
 
 case class MsgSetCraftMode(craftMode: CraftMode.Value) extends NetworkHandler.Message
 
 object CodecSetCraftMode extends NetworkHandler.Codec[MsgSetCraftMode] {
-  override def encodeMsg(m: MsgSetCraftMode, p: PacketBuffer): Unit =
+  override def encodeMsg(m: MsgSetCraftMode, p: FriendlyByteBuf): Unit =
     p.writeByte(m.craftMode.id)
 
-  override def decodeMsg(p: PacketBuffer): MsgSetCraftMode =
+  override def decodeMsg(p: FriendlyByteBuf): MsgSetCraftMode =
     MsgSetCraftMode(CraftMode(p.readByte()))
 }

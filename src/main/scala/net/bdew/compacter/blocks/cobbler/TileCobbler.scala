@@ -1,14 +1,15 @@
 package net.bdew.compacter.blocks.cobbler
 
 import net.bdew.lib.capabilities.helpers.ItemHelper
-import net.bdew.lib.tile.{TileExtended, TileTicking}
-import net.minecraft.block
-import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntityType
-import net.minecraft.util.Direction
+import net.bdew.lib.tile.{TileExtended, TileTickingServer}
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockState
 
-class TileCobbler(teType: TileEntityType[_]) extends TileExtended(teType) with TileTicking {
-  lazy val cobbleStack = new ItemStack(block.Blocks.COBBLESTONE, 64)
+class TileCobbler(teType: BlockEntityType[_], pos: BlockPos, state: BlockState) extends TileExtended(teType, pos, state) with TileTickingServer {
+  lazy val cobbleStack = new ItemStack(Blocks.COBBLESTONE, 64)
   serverTick.listen(() => {
     for {
       side <- Direction.values()

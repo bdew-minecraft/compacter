@@ -1,5 +1,5 @@
 modLoader = "kotori_scala"
-loaderVersion = "[2.13.3,2.14.0)"
+loaderVersion = "[2.13.8,2.14.0)"
 issueTrackerURL = "https://github.com/bdew-minecraft/compacter/issues"
 license = "MIT"
 
@@ -20,21 +20,21 @@ This mods adds a single simple block - the Compacter.
 [[dependencies.compacter]]
 modId = "forge"
 mandatory = true
-versionRange = "[36,)"
+versionRange = "[39,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.compacter]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.16.5,)"
+versionRange = "[1.18.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.compacter]]
 modId = "bdlib"
 mandatory = true
-versionRange = "[1.17.0,)"
+versionRange = "[1.18.0,)"
 ordering = "NONE"
 side = "BOTH"
 

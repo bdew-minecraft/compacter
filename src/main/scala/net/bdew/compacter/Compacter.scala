@@ -3,9 +3,8 @@ package net.bdew.compacter
 import net.bdew.compacter.misc.CompacterCaches
 import net.bdew.compacter.network.NetworkHandler
 import net.bdew.compacter.registries.{Blocks, Containers, Items}
-import net.minecraft.client.resources.ReloadListener
-import net.minecraft.profiler.IProfiler
-import net.minecraft.resources.IResourceManager
+import net.minecraft.server.packs.resources.{ResourceManager, SimplePreparableReloadListener}
+import net.minecraft.util.profiling.ProfilerFiller
 import net.minecraftforge.client.event.RecipesUpdatedEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.AddReloadListenerEvent
@@ -40,12 +39,12 @@ object Compacter {
   @SubscribeEvent
   def addReloadListener(event: AddReloadListenerEvent): Unit = {
     event.addListener(
-      new ReloadListener[Void]() {
-        override protected def prepare(manager: IResourceManager, profiler: IProfiler): Void = {
+      new SimplePreparableReloadListener[Void]() {
+        override protected def prepare(manager: ResourceManager, profiler: ProfilerFiller): Void = {
           null
         }
 
-        override protected def apply(nothing: Void, resourceManagerIn: IResourceManager, profilerIn: IProfiler): Unit = {
+        override protected def apply(nothing: Void, resourceManagerIn: ResourceManager, profilerIn: ProfilerFiller): Unit = {
           CompacterCaches.invalidate()
         }
       })

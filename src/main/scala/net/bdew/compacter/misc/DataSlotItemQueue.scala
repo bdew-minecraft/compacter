@@ -2,8 +2,8 @@ package net.bdew.compacter.misc
 
 import net.bdew.lib.PimpVanilla._
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundNBT
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.item.ItemStack
 
 case class DataSlotItemQueue(name: String, parent: DataSlotContainer) extends DataSlot {
   private val queue = collection.mutable.Queue.empty[ItemStack]
@@ -16,11 +16,11 @@ case class DataSlotItemQueue(name: String, parent: DataSlotContainer) extends Da
   def isEmpty: Boolean = queue.isEmpty
   def nonEmpty: Boolean = queue.nonEmpty
 
-  override def save(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  override def save(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     t.setListVals(name, queue)
   }
 
-  override def load(t: CompoundNBT, kind: UpdateKind.Value): Unit = {
+  override def load(t: CompoundTag, kind: UpdateKind.Value): Unit = {
     queue.clear()
     queue ++= t.getListVals[ItemStack](name)
   }

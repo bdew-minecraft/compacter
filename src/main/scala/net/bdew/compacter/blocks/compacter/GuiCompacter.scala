@@ -6,9 +6,9 @@ import net.bdew.compacter.network.{MsgSetCraftMode, MsgSetRecurseMode, MsgSetRsM
 import net.bdew.lib.gui._
 import net.bdew.lib.gui.widgets.WidgetLabel
 import net.bdew.lib.power.WidgetPowerGauge
-import net.minecraft.entity.player.PlayerInventory
+import net.minecraft.world.entity.player.Inventory
 
-class GuiCompacter(container: ContainerCompacter, playerInv: PlayerInventory) extends BaseScreen(container, playerInv, container.te.getDisplayName) {
+class GuiCompacter(container: ContainerCompacter, playerInv: Inventory) extends BaseScreen(container, playerInv, container.te.getDisplayName) {
 
   override val background: Texture = Textures.compacter
 

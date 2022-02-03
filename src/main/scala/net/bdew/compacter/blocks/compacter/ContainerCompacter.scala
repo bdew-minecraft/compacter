@@ -3,9 +3,9 @@ package net.bdew.compacter.blocks.compacter
 import net.bdew.compacter.registries.Containers
 import net.bdew.lib.container.{BaseContainer, SlotValidating}
 import net.bdew.lib.data.base.ContainerDataSlots
-import net.minecraft.entity.player.PlayerInventory
+import net.minecraft.world.entity.player.Inventory
 
-class ContainerCompacter(val te: TileCompacter, playerInventory: PlayerInventory, id: Int)
+class ContainerCompacter(val te: TileCompacter, playerInventory: Inventory, id: Int)
   extends BaseContainer(te.externalInventory, Containers.compacter.get(), id) with ContainerDataSlots {
   override lazy val dataSource: TileCompacter = te
 

@@ -1,12 +1,11 @@
 package net.bdew.compacter.misc
 
 import net.bdew.compacter.Compacter
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.CraftingInventory
-import net.minecraft.inventory.container.Container
-import net.minecraft.item.crafting.{ICraftingRecipe, IRecipeType}
-import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.world.World
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.{AbstractContainerMenu, CraftingContainer}
+import net.minecraft.world.item.{Item, ItemStack}
+import net.minecraft.world.item.crafting.{CraftingRecipe, RecipeType}
+import net.minecraft.world.level.Level
 
 case class ItemDef(item: Item) {
   def stack(n: Int = 1): ItemStack = {
@@ -21,11 +20,11 @@ object ItemDef {
   def apply(stack: ItemStack): ItemDef = ItemDef(stack.getItem)
 }
 
-object FakeContainer extends Container(null, 0) {
-  override def stillValid(player: PlayerEntity): Boolean = true
+object FakeContainer extends AbstractContainerMenu(null, 0) {
+  override def stillValid(player: Player): Boolean = true
 }
 
-class FakeInventory(cache: CompacterCache, stack: ItemStack) extends CraftingInventory(FakeContainer, cache.size, cache.size) {
+class FakeInventory(cache: CompacterCache, stack: ItemStack) extends CraftingContainer(FakeContainer, cache.size, cache.size) {
   override def getContainerSize: Int = cache.size * cache.size
 
   override def setChanged(): Unit = {
@@ -44,22 +43,22 @@ class CompacterCache(val size: Int) {
 
   val inputAmount: Int = size * size
 
-  def hasRecipe(stack: ItemStack, world: World): Boolean =
+  def hasRecipe(stack: ItemStack, world: Level): Boolean =
     (!stack.hasTag) && !getRecipe(stack, world).isEmpty
 
-  def getRecipe(stack: ItemStack, world: World): ItemStack =
+  def getRecipe(stack: ItemStack, world: Level): ItemStack =
     getRecipe(ItemDef(stack), world)
 
   def recipeHasItemAt(x: Int, y: Int): Boolean = x < size && y < size
 
-  def getRecipe(itemDef: ItemDef, world: World): ItemStack = {
+  def getRecipe(itemDef: ItemDef, world: Level): ItemStack = {
     if (negative.contains(itemDef)) return ItemStack.EMPTY
     if (cache.contains(itemDef)) return cache(itemDef).copy()
 
     val fakeInventory = new FakeInventory(this, itemDef.stack())
 
     val result = world.getRecipeManager
-      .getRecipeFor[CraftingInventory, ICraftingRecipe](IRecipeType.CRAFTING, fakeInventory, world)
+      .getRecipeFor[CraftingContainer, CraftingRecipe](RecipeType.CRAFTING, fakeInventory, world)
       .map(recipe => recipe.assemble(fakeInventory))
       .filter(!_.isEmpty)
 

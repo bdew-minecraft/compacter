@@ -3,7 +3,7 @@ package net.bdew.compacter
 import net.bdew.compacter.blocks.compacter.{CraftMode, RecurseMode}
 import net.bdew.lib.gui._
 import net.bdew.lib.misc.RSMode
-import net.minecraft.util.ResourceLocation
+import net.minecraft.resources.ResourceLocation
 
 object Textures {
   val image = new ResourceLocation("compacter", "textures/gui/compacter.png")

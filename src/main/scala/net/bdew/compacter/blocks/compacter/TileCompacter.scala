@@ -13,12 +13,14 @@ import net.bdew.lib.items.ItemUtils
 import net.bdew.lib.misc.RSMode
 import net.bdew.lib.power.DataSlotPower
 import net.bdew.lib.tile.{BreakListeningTile, TileExtended}
-import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}
-import net.minecraft.inventory.container.{Container, INamedContainerProvider}
-import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntityType
-import net.minecraft.util.Direction
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.network.chat.Component
+import net.minecraft.world.MenuProvider
+import net.minecraft.world.entity.player.{Inventory, Player}
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 import net.minecraftforge.energy.IEnergyStorage
@@ -26,8 +28,8 @@ import net.minecraftforge.items.IItemHandler
 
 import scala.collection.mutable
 
-class TileCompacter(teType: TileEntityType[_]) extends TileExtended(teType)
-  with TileDataSlotsTicking with INamedContainerProvider with BreakListeningTile {
+class TileCompacter(teType: BlockEntityType[_], pos: BlockPos, state: BlockState) extends TileExtended(teType, pos, state)
+  with TileDataSlotsTicking with MenuProvider with BreakListeningTile {
 
   object Slots {
     val input: Range.Inclusive = 0 to 26
@@ -68,8 +70,8 @@ class TileCompacter(teType: TileEntityType[_]) extends TileExtended(teType)
       super.getCapability(cap, side)
   }
 
-  override def getDisplayName: ITextComponent = Text.translate(Blocks.compacter.block.get().getDescriptionId)
-  override def createMenu(id: Int, playerInventory: PlayerInventory, player: PlayerEntity): Container =
+  override def getDisplayName: Component = Text.translate(Blocks.compacter.block.get().getDescriptionId)
+  override def createMenu(id: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu =
     new ContainerCompacter(this, playerInventory, id)
 
   override def dataSlotChanged(slot: DataSlot): Unit = {
