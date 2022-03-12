@@ -20,21 +20,21 @@ This mods adds a single simple block - the Compacter.
 [[dependencies.compacter]]
 modId = "forge"
 mandatory = true
-versionRange = "[39,)"
+versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.compacter]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.1,)"
+versionRange = "[1.18.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.compacter]]
 modId = "bdlib"
 mandatory = true
-versionRange = "[1.18.0,)"
+versionRange = "[1.19.0,)"
 ordering = "NONE"
 side = "BOTH"
 
