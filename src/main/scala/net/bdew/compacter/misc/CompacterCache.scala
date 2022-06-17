@@ -3,8 +3,8 @@ package net.bdew.compacter.misc
 import net.bdew.compacter.Compacter
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.{AbstractContainerMenu, CraftingContainer}
-import net.minecraft.world.item.{Item, ItemStack}
 import net.minecraft.world.item.crafting.{CraftingRecipe, RecipeType}
+import net.minecraft.world.item.{Item, ItemStack}
 import net.minecraft.world.level.Level
 
 case class ItemDef(item: Item) {
@@ -22,6 +22,7 @@ object ItemDef {
 
 object FakeContainer extends AbstractContainerMenu(null, 0) {
   override def stillValid(player: Player): Boolean = true
+  override def quickMoveStack(player : Player, slot : Int): ItemStack = ItemStack.EMPTY
 }
 
 class FakeInventory(cache: CompacterCache, stack: ItemStack) extends CraftingContainer(FakeContainer, cache.size, cache.size) {
