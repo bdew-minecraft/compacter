@@ -19,7 +19,7 @@ class BlockCompacter extends Block(Blocks.machineProps) with HasTETickingServer[
       InteractionResult.SUCCESS
     } else player match {
       case serverPlayer: ServerPlayer =>
-        NetworkHooks.openGui(serverPlayer, getTE(world, pos), pos)
+        NetworkHooks.openScreen(serverPlayer, getTE(world, pos), pos)
         InteractionResult.CONSUME
       case _ => InteractionResult.FAIL
     }
