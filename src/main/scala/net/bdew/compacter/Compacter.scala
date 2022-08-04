@@ -15,18 +15,7 @@ import net.minecraftforge.fml.config.ModConfig
 import org.apache.logging.log4j.{LogManager, Logger}
 
 @Mod(Compacter.ModId)
-object Compacter {
-  final val ModId = "compacter"
-
-  val log: Logger = LogManager.getLogger
-
-  def logDebug(msg: String, args: Any*): Unit = log.debug(msg.format(args: _*))
-  def logInfo(msg: String, args: Any*): Unit = log.info(msg.format(args: _*))
-  def logWarn(msg: String, args: Any*): Unit = log.warn(msg.format(args: _*))
-  def logError(msg: String, args: Any*): Unit = log.error(msg.format(args: _*))
-  def logWarnException(msg: String, t: Throwable, args: Any*): Unit = log.warn(msg.format(args: _*), t)
-  def logErrorException(msg: String, t: Throwable, args: Any*): Unit = log.error(msg.format(args: _*), t)
-
+class Compacter {
   Items.init()
   Blocks.init()
   Containers.init()
@@ -54,4 +43,17 @@ object Compacter {
   def recipesUpdated(event: RecipesUpdatedEvent): Unit = {
     CompacterCaches.invalidate()
   }
+}
+
+object Compacter {
+  final val ModId = "compacter"
+
+  val log: Logger = LogManager.getLogger
+
+  def logDebug(msg: String, args: Any*): Unit = log.debug(msg.format(args: _*))
+  def logInfo(msg: String, args: Any*): Unit = log.info(msg.format(args: _*))
+  def logWarn(msg: String, args: Any*): Unit = log.warn(msg.format(args: _*))
+  def logError(msg: String, args: Any*): Unit = log.error(msg.format(args: _*))
+  def logWarnException(msg: String, t: Throwable, args: Any*): Unit = log.warn(msg.format(args: _*), t)
+  def logErrorException(msg: String, t: Throwable, args: Any*): Unit = log.error(msg.format(args: _*), t)
 }
