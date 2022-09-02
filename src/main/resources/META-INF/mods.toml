@@ -20,7 +20,7 @@ This mods adds a single simple block - the Compacter.
 [[dependencies.compacter]]
 modId = "forge"
 mandatory = true
-versionRange = "[43.0,)"
+versionRange = "[43.1,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -34,7 +34,7 @@ side = "BOTH"
 [[dependencies.compacter]]
 modId = "bdlib"
 mandatory = true
-versionRange = "[1.24.0,)"
+versionRange = "[1.24.1,)"
 ordering = "NONE"
 side = "BOTH"
 
