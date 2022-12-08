@@ -1,0 +1,13 @@
+{
+    "block.compacter.compacter": "Compactador",
+    "block.compacter.cobbler": "Pedre",
+    "itemGroup.compacter": "Compactador",
+    "compacter.recurse.enabled": "Compactação recursiva habilitada",
+    "compacter.recurse.disabled": "Compactação recursiva desativada",
+    "compacter.craftmode.two_three": "Tente receitas 2x2 primeiro",
+    "compacter.craftmode.three_two": "Tente receitas 3x3 primeiro",
+    "compacter.craftmode.three_only": "Apenas receitas 3x3",
+    "compacter.craftmode.two_only": "Apenas receitas 2x2",
+    "compacter.craftmode.one_only": "Modo de item único (1x1)",
+    "compacter.craftmode.hollow": "Modo Hollow (3x3 sem centro)"
+  }
