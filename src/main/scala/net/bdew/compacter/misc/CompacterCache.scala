@@ -2,7 +2,7 @@ package net.bdew.compacter.misc
 
 import net.bdew.compacter.Compacter
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.inventory.{AbstractContainerMenu, CraftingContainer}
+import net.minecraft.world.inventory.{AbstractContainerMenu, CraftingContainer, TransientCraftingContainer}
 import net.minecraft.world.item.crafting.{CraftingRecipe, RecipeType}
 import net.minecraft.world.item.{Item, ItemStack}
 import net.minecraft.world.level.Level
@@ -22,15 +22,10 @@ object ItemDef {
 
 object FakeContainer extends AbstractContainerMenu(null, 0) {
   override def stillValid(player: Player): Boolean = true
-  override def quickMoveStack(player : Player, slot : Int): ItemStack = ItemStack.EMPTY
+  override def quickMoveStack(player: Player, slot: Int): ItemStack = ItemStack.EMPTY
 }
 
-class FakeInventory(cache: CompacterCache, stack: ItemStack) extends CraftingContainer(FakeContainer, cache.size, cache.size) {
-  override def getContainerSize: Int = cache.size * cache.size
-
-  override def setChanged(): Unit = {
-  }
-
+class FakeInventory(cache: CompacterCache, stack: ItemStack) extends TransientCraftingContainer(FakeContainer, cache.size, cache.size) {
   override def getItem(slot: Int): ItemStack = {
     val x = slot % cache.size
     val y = slot / cache.size
@@ -60,7 +55,7 @@ class CompacterCache(val size: Int) {
 
     val result = world.getRecipeManager
       .getRecipeFor[CraftingContainer, CraftingRecipe](RecipeType.CRAFTING, fakeInventory, world)
-      .map(recipe => recipe.assemble(fakeInventory))
+      .map(recipe => recipe.assemble(fakeInventory, world.registryAccess))
       .filter(!_.isEmpty)
 
     if (!result.isPresent) {
